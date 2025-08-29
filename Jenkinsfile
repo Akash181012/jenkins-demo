@@ -1,29 +1,39 @@
-
 pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                git url: 'https://github.com/Akash181012/jenkins-demo.git', branch: 'main'
+                git branch: 'main', url: 'https://github.com/your-username/my-python-app.git'
             }
         }
 
-        stage('Build') {
+        stage('Setup Python Environment') {
             steps {
-                sh 'echo "Building the project..."'
+                sh '''
+                python3 -m venv venv
+                . venv/bin/activate
+                pip install --upgrade pip
+                pip install -r requirements.txt
+                '''
             }
         }
 
-        stage('Test') {
+        stage('Run Tests') {
             steps {
-                sh 'echo "Running tests..."'
+                sh '''
+                . venv/bin/activate
+                pytest
+                '''
             }
         }
 
-        stage('Deploy') {
+        stage('Run Application') {
             steps {
-                sh 'echo "Deploying application..."'
+                sh '''
+                . venv/bin/activate
+                python app.py
+                '''
             }
         }
     }
